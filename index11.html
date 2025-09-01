@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IBPS Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 95%;
+      max-width: 650px;
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    h2 { font-size: 18px; }
+    .section {
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #eee;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .options button:hover { background: #ddd; }
+    .selected { background: #f9e79f !important; }
+    .correct { background: #82e0aa !important; color: black; }
+    .wrong { background: #f1948a !important; color: black; }
+    .controls {
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .controls button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #3498db;
+      color: white;
+      font-size: 14px;
+    }
+    .score {
+      font-size: 20px;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    .solution {
+      margin-top: 10px;
+      padding: 10px;
+      border-left: 4px solid #3498db;
+      background: #ecf0f1;
+      font-size: 14px;
+    }
+    /* Timer Styling */
+    #timer {
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 20px;
+      font-weight: bold;
+      color: #e74c3c;
+      background: white;
+      padding: 5px 15px;
+      border-radius: 8px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="timer">15:00</div>
+  <h1 style="color: rgb(20, 187, 187);">Welcome to IBPS</h1>
+  <div class="section" id="sectionTitle"></div>
+  <h2 id="question"></h2>
+  <div class="options" id="options"></div>
+  <div class="solution" id="solution"></div>
+  <div class="controls">
+    <button onclick="prevQuestion()">Previous</button>
+    <button onclick="nextQuestion()">Next</button>
+  </div>
+  <div class="score" id="score"></div>
+</div>
+
+<script>
+const quizData = [
+
+
+
+
+  {section:"Maths",q:"Solve: 25 × 4 = ?",options:["50","75","100","125"],answer:2,solution:"25 × 4 = 100."},
+  {section:"Maths",q:"Simplify: 12 ÷ 3 + 5 =",options:["7","9","11","12"],answer:1,solution:"12 ÷ 3 = 4; 4+5=9."},
+  {section:"Maths",q:"Square root of 144 =",options:["10","11","12","13"],answer:2,solution:"√144 = 12."},
+  {section:"Maths",q:"Solve: (15+5) × 2 =",options:["30","35","40","45"],answer:2,solution:"20×2=40."},
+  {section:"Maths",q:"If 3x=12, then x=",options:["2","3","4","5"],answer:2,solution:"x=12/3=4."},
+  {section:"Maths",q:"10% of 250 =",options:["20","25","30","35"],answer:1,solution:"10%×250=25."},
+  {section:"Maths",q:"Solve: 7² =",options:["42","47","49","56"],answer:2,solution:"7²=49."},
+  {section:"Maths",q:"LCM of 6 and 8 =",options:["12","18","24","36"],answer:2,solution:"LCM=24."},
+  {section:"Maths",q:"Perimeter of square with side 5cm =",options:["10cm","15cm","20cm","25cm"],answer:2,solution:"4×5=20cm."},
+  {section:"Maths",q:"Solve: 1000 – 456 =",options:["444","544","554","564"],answer:1,solution:"1000-456=544."},
+
+  /* -------- English (10) -------- */
+  {section:"English",q:"Choose the synonym of 'Rapid':",options:["Slow","Quick","Calm","Weak"],answer:1,solution:"Rapid means Quick."},
+  {section:"English",q:"Fill in the blank: She ____ going to market.",options:["is","are","was","be"],answer:0,solution:"Correct → She is going to market."},
+  {section:"English",q:"Choose the antonym of 'Honest':",options:["Truthful","Sincere","Dishonest","Loyal"],answer:2,solution:"Opposite of Honest → Dishonest."},
+  {section:"English",q:"Select correct sentence:",options:["He go to school","He goes to school","He going school","He gone school"],answer:1,solution:"Correct grammar → He goes to school."},
+  {section:"English",q:"Find error: She don’t like mangoes.",options:["She","don’t","like","mangoes"],answer:1,solution:"It should be 'doesn’t' not 'don’t'."},
+  {section:"English",q:"Choose synonym of 'Huge':",options:["Small","Tiny","Gigantic","Weak"],answer:2,solution:"Huge = Gigantic."},
+  {section:"English",q:"One word for 'A person who writes poems':",options:["Poet","Singer","Writer","Editor"],answer:0,solution:"Correct → Poet."},
+  {section:"English",q:"Choose antonym of 'Difficult':",options:["Easy","Tough","Hard","Complicated"],answer:0,solution:"Opposite → Easy."},
+  {section:"English",q:"Fill in: The sun ____ in the east.",options:["rise","rises","rising","rose"],answer:1,solution:"Correct → rises."},
+  {section:"English",q:"Choose correct passive form: They play cricket.",options:["Cricket is played by them","Cricket played by them","Cricket is play them","Cricket played them"],answer:0,solution:"Correct passive → Cricket is played by them."},
+
+  /* -------- Maths (10) -------- */
+
+  /* -------- Reasoning (10) -------- */
+  {section:"Reasoning",q:"If A=1, B=2, then Z=?",options:["24","25","26","27"],answer:2,solution:"Z is 26th letter."},
+  {section:"Reasoning",q:"Find odd one: Apple, Mango, Banana, Carrot",options:["Apple","Mango","Banana","Carrot"],answer:3,solution:"Carrot is a vegetable, rest are fruits."},
+  {section:"Reasoning",q:"Which number comes next: 2, 4, 8, 16, ?",options:["18","20","32","30"],answer:2,solution:"Doubles each step, so 32."},
+  {section:"Reasoning",q:"Ravi is taller than Mohan but shorter than Ajay. Who is tallest?",options:["Ravi","Mohan","Ajay","Cannot say"],answer:2,solution:"Ajay is tallest."},
+  {section:"Reasoning",q:"Find missing: 5,10,15,20,?",options:["22","23","25","30"],answer:2,solution:"+5 sequence → 25."},
+  {section:"Reasoning",q:"Choose odd one: Cat, Dog, Cow, Tiger",options:["Cat","Dog","Cow","Tiger"],answer:2,solution:"Cow is domestic farm animal, others are pets/wild."},
+  {section:"Reasoning",q:"Which is different: Circle, Square, Triangle, Cube",options:["Circle","Square","Triangle","Cube"],answer:3,solution:"Cube is 3D, rest are 2D."},
+  {section:"Reasoning",q:"Rearrange letters: 'RTAEHC' → ?",options:["CARTHE","EARTH","CHART","TEACHER"],answer:3,solution:"Correct word → TEACHER."},
+  {section:"Reasoning",q:"If Monday is coded as 514263, then DAY=?",options:["423","263","514","162"],answer:1,solution:"DAY → 263."},
+  {section:"Reasoning",q:"Odd one: 2, 4, 6, 9",options:["2","4","6","9"],answer:3,solution:"9 is odd, others even."},
+];
+
+let current = 0;
+let score = 0;
+let answered = Array(quizData.length).fill(false);
+
+function loadQuestion() {
+  let q = quizData[current];
+  document.getElementById("sectionTitle").innerText = `Section: ${q.section}`;
+  document.getElementById("question").innerText = `Q${current+1}. ${q.q}`;
+  let optionsHTML = "";
+  q.options.forEach((opt,i) => {
+    optionsHTML += `<button onclick="checkAnswer(${i}, this)">${opt}</button>`;
+  });
+  document.getElementById("options").innerHTML = optionsHTML;
+  document.getElementById("solution").innerHTML = ""; 
+}
+
+function checkAnswer(selected, btn) {
+  if (answered[current]) return;
+  answered[current] = true;
+  let buttons = document.querySelectorAll("#options button");
+  buttons[selected].classList.add("selected");
+
+  setTimeout(() => {
+    if (selected === quizData[current].answer) {
+      buttons[selected].classList.remove("selected");
+      buttons[selected].classList.add("correct");
+      score++;
+    } else {
+      buttons[selected].classList.remove("selected");
+      buttons[selected].classList.add("wrong");
+      buttons[quizData[current].answer].classList.add("correct");
+    }
+    document.getElementById("solution").innerHTML = "💡 " + quizData[current].solution;
+
+    if (current === quizData.length-1) {
+      document.getElementById("score").innerText = `✅ Final Score: ${score} / ${quizData.length}`;
+    }
+  }, 400);
+}
+
+function nextQuestion() {
+  if (current < quizData.length-1) {
+    current++;
+    loadQuestion();
+  }
+}
+function prevQuestion() {
+  if (current > 0) {
+    current--;
+    loadQuestion();
+  }
+}
+loadQuestion();
+
+/* TIMER */
+let time = 15 * 60;
+let timerElement = document.getElementById("timer");
+let timerInterval = setInterval(() => {
+  let minutes = Math.floor(time / 60);
+  let seconds = time % 60;
+  timerElement.textContent = `${minutes}:${seconds < 10 ? "0"+seconds : seconds}`;
+  
+  if (time <= 0) {
+    clearInterval(timerInterval);
+    document.getElementById("score").innerText = `⏰ Time Over! Final Score: ${score} / ${quizData.length}`;
+    document.getElementById("options").innerHTML = "";
+    document.getElementById("solution").innerHTML = "";
+  }
+  time--;
+}, 1000);
+</script>
+
+</body>
+</html>
